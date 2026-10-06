@@ -30,7 +30,7 @@ const selectFiltered = createSelector([(state: State) => state.services.items, (
 function validate(name: string, price: string) { const errors: FormState['errors'] = {}; if (name.trim().length < 2) errors.name = 'Введите минимум 2 символа'; if (!price || Number(price) <= 0) errors.price = 'Цена должна быть больше 0'; return errors }
 
 function App() {
-  const dispatch = useDispatch(); const state = useSelector((value: State) => value); const filtered = useSelector(selectFiltered); const searchRef = useRef<HTMLInputElement>(null); const editing = state.services.items.find(({ id }) => id === state.form.editingId)
+  const dispatch = useDispatch(); const services = useSelector((value: State) => value.services); const form = useSelector((value: State) => value.form); const filter = useSelector((value: State) => value.filter); const state = { services, form, filter }; const filtered = useSelector(selectFiltered); const searchRef = useRef<HTMLInputElement>(null); const editing = state.services.items.find(({ id }) => id === state.form.editingId)
   const submit = (event: React.FormEvent) => { event.preventDefault(); const errors = validate(state.form.name, state.form.price); if (Object.keys(errors).length) dispatch({ type: 'SET_ERRORS', payload: errors }); else dispatch({ type: 'SAVE_SERVICE' }) }
   return <main className="shell"><header><p className="eyebrow">REDUX SERVICE DESK</p><h1>Управление услугами</h1><p>Единое Redux-хранилище для формы, каталога и поиска.</p></header>
     <section className={`panel form-panel ${editing ? 'editing' : ''}`}><div className="section-title"><div><span>{editing ? 'Режим редактирования' : 'Новая услуга'}</span><h2>{editing ? editing.name : 'Добавить услугу'}</h2></div><b>{state.services.items.length} услуг</b></div>
